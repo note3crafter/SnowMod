@@ -1,0 +1,6 @@
+name: SnowMod
+main: TheNote\SnowMod\SnowMod
+version: 1.0.0
+author: TheNote
+api: 3.9.0
+description: SnowMod by TheNote
