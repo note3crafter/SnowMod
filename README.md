@@ -1,5 +1,4 @@
 # SnowMod v.1.0.0
+This plugin enables snowing on your server and sets snowlayers!
 
-Warning this Plugin Place Snowlayers in all Worlds on your Server!
-
-Testet on Altay amd Pocketmine 
+Let it snow on your server! Perfect for the winter time. Have fun with it
