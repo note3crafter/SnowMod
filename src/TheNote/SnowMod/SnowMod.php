@@ -28,39 +28,49 @@ class SnowMod extends PluginBase implements Listener
     public $m_version = 2, $pk;
     public $denied = [];
 
-    public function onEnable() {
+    public function onEnable()
+    {
         $this->getScheduler()->scheduleRepeatingTask(new SnowModTask ($this), 1);
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getLogger()->info("Thanks for using the SnowMod!");
     }
-    public function onChunkLoadEvent(ChunkLoadEvent $event) {
-            for ($x = 0; $x < 16; ++$x)
-                for ($z = 0; $z < 16; ++$z)
-                    $event->getChunk()->setBiomeId($x, $z, 12);
+
+    public function onChunkLoadEvent(ChunkLoadEvent $event)
+    {
+        for ($x = 0; $x < 16; ++$x)
+            for ($z = 0; $z < 16; ++$z)
+                $event->getChunk()->setBiomeId($x, $z, 12);
     }
-    public function onPlayerJoinEvent(PlayerJoinEvent $event) {
+
+    public function onPlayerJoinEvent(PlayerJoinEvent $event)
+    {
         $player = $event->getPlayer();
         $pk = new LevelEventPacket ();
         $pk->evid = 3001;
         $pk->data = 10000;
         $player->dataPacket($pk);
     }
-    public function SnowMod() {
+
+    public function SnowMod()
+    {
         foreach ($this->getServer()->getOnlinePlayers() as $player) {
             $this->SnowModCreate($player);
         }
     }
-    public function SnowModCreate(Player $player) {
+
+    public function SnowModCreate(Player $player)
+    {
         $x = mt_rand($player->x - 15, $player->x + 15);
         $z = mt_rand($player->z - 15, $player->z + 15);
         $y = $player->getLevel()->getHighestBlockAt($x, $z);
 
-            if ($this->cooltime < 11) {
-                $this->cooltime++;
-                $this->getScheduler()->scheduleDelayedTask(new SnowCreateLayer ($this, new Position ($x, $y, $z, $player->getLevel())), 20);
-            }
+        if ($this->cooltime < 11) {
+            $this->cooltime++;
+            $this->getScheduler()->scheduleDelayedTask(new SnowCreateLayer ($this, new Position ($x, $y, $z, $player->getLevel())), 20);
+        }
     }
-    public function SnowCreate(Position $pos) {
+
+    public function SnowCreate(Position $pos)
+    {
         $this->cooltime--;
         if ($pos == null)
             return;
@@ -74,7 +84,6 @@ class SnowMod extends PluginBase implements Listener
         $up = $pos->getLevel()->getBlock($pos->add(0, 1, 0));
         if ($up->getId() != Block::AIR)
             return;
-
-        $pos->getLevel()->setBlock($up, Block::get(Item::SNOW_LAYER), 0, false);
+        $pos->getLevel()->setBlock($up, Block::get(Item::SNOW_LAYER), 0, true);
     }
 }
