@@ -1,7 +1,12 @@
 name: SnowMod
 main: TheNote\SnowMod\SnowMod
-version: 1.0.0
+version: 2.0.0
 author: TheNote
-api: 3.9.0
+api: 3.16.0
 mcpe-protocol: 419 #V.1.16.100
 description: SnowMod by TheNote
+
+commands:
+  snowmod:
+    description: "Enable/Disable the Snowmod"
+    permission: "snowmod.use"
