@@ -7,23 +7,26 @@
 //     ║ ║  ║ ║ ║ ║║ ╚═══╗║ ║  ╚═╗ ║║ ╚═╝ ║  ║ ║  ║ ╚═══╗
 //     ╚═╝  ╚═╝ ╚═╝╚═════╝╚═╝    ╚═╝╚═════╝  ╚═╝  ╚═════╝
 //   Copyright by TheNote! Not for Resale! Not for others
-//                        2017-2020
+//                        2017-2022
 
 namespace TheNote\SnowMod;
 
 use pocketmine\scheduler\Task;
-use pocketmine\level\Position;
+use pocketmine\world\Position;
 
-class SnowDestructLayer extends Task {
+class SnowDestructLayer extends Task
+{
     public $position;
-    public $cooltime = 0;
-    function __construct(SnowMod $player, Position $position) {
+
+    function __construct(SnowMod $player, Position $position)
+    {
         $this->player = $player;
         $this->position = $position;
     }
-    public function onRun($currentTick) {
 
+    public function onRun(): void
+    {
         $player = $this->player;
-        $player->SnowDestruct( $this->position );
+        $player->SnowDestruct($this->position);
     }
 }
