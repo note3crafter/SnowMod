@@ -13,10 +13,14 @@ namespace TheNote\SnowMod;
 
 use pocketmine\block\BlockFactory;
 use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\VanillaBlocks;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+use pocketmine\data\bedrock\BiomeIds;
 use pocketmine\event\world\ChunkLoadEvent;
 use pocketmine\item\ItemIds;
+use pocketmine\item\StringToItemParser;
+use pocketmine\item\VanillaItems;
 use pocketmine\math\Vector3;
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
@@ -80,11 +84,11 @@ class SnowMod extends PluginBase implements Listener
         if ($check === true) {
             for ($x = 0; $x < 16; ++$x)
                 for ($z = 0; $z < 16; ++$z)
-                    $event->getChunk()->setBiomeId($x, $z, 12);
+                    $event->getChunk()->setBiomeId($x, $z, BiomeIds::ICE_PLAINS);
         } elseif ($check === false) {
             for ($x = 0; $x < 16; ++$x)
                 for ($z = 0; $z < 16; ++$z)
-                    $event->getChunk()->setBiomeId($x, $z, 1);
+                    $event->getChunk()->setBiomeId($x, $z, BiomeIds::PLAINS);
         }
         return true;
     }
@@ -135,21 +139,46 @@ class SnowMod extends PluginBase implements Listener
         $down = $pos->getWorld()->getBlock($pos);
         if (!$down->isSolid())
             return;
-        if ($down->getId() == BlockLegacyIds::GRAVEL or $down->getId() == BlockLegacyIds::COBBLESTONE or $down->getId() == 32 or $down->getId() == BlockLegacyIds::DIAMOND_BLOCK or $down->getId() == BlockLegacyIds::WATER or $down->getId() == BlockLegacyIds::WOOL or $down->getId() == 44 or $down->getId() == BlockLegacyIds::FENCE or $down->getId() == BlockLegacyIds::STONE_BRICK_STAIRS or $down->getId() == 43 or $down->getId() == BlockLegacyIds::FARMLAND)
+        if ($down->getId() == BlockLegacyIds::MYCELIUM
+            or $down->getId() == BlockLegacyIds::PODZOL
+            or $down->getId() == BlockLegacyIds::COBBLESTONE
+            or $down->getId() == BlockLegacyIds::DEAD_BUSH
+            or $down->getId() == BlockLegacyIds::WATER
+            or $down->getId() == BlockLegacyIds::LAVA
+            or $down->getId() == BlockLegacyIds::WOOL
+            or $down->getId() == BlockLegacyIds::ACACIA_FENCE_GATE
+            or $down->getId() == BlockLegacyIds::BIRCH_FENCE_GATE
+            or $down->getId() == BlockLegacyIds::DARK_OAK_FENCE_GATE
+            or $down->getId() == BlockLegacyIds::JUNGLE_FENCE_GATE
+            or $down->getId() == BlockLegacyIds::OAK_FENCE_GATE
+            or $down->getId() == BlockLegacyIds::SPRUCE_FENCE_GATE
+            or $down->getID() == BlockLegacyIds::SMOOTH_STONE
+            or $down->getId() == BlockLegacyIds::FARMLAND)
             return;
 
         $up = $pos->getWorld()->getBlock($pos->add(0, 1, 0));
         if ($up->getId() != BlockLegacyIds::AIR)
             return;
-        $pos->getWorld()->setBlock($pos->add(0, 1, 0), BlockFactory::getInstance()->get(ItemIds::SNOW_LAYER, 0), true);
+        $settings = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
+        $level = $settings->get("worlds", []);
+        $wname = $pos->getWorld()->getFolderName();
+        if (in_array($wname, $level)) {
+            $pos->getWorld()->setBlock($pos->add(0, 1, 0), BlockFactory::getInstance()->get(BlockLegacyIds::SNOW_LAYER, 0), true);
+        }
     }
 
     public function SnowDestruct(Position $pos)
     {
         $this->cooltime--;
         if ($pos == null) return;
-        if ($pos->getWorld()->getBlockAt($pos->x, $pos->y, $pos->z)->getId() == BlockLegacyIds::SNOW_LAYER) {
-            $pos->getWorld()->setBlock($pos, BlockFactory::getInstance()->get(BlockLegacyIds::AIR, 0), false);
+        $settings = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
+        $level = $settings->get("worlds", []);
+        $wname = $pos->getWorld()->getFolderName();
+        if (in_array($wname, $level)) {
+            if ($pos->getWorld()->getBlockAt($pos->x, $pos->y, $pos->z)->getId() == BlockLegacyIds::SNOW_LAYER) {
+                $pos->getWorld()->setBlock($pos, BlockFactory::getInstance()->get(BlockLegacyIds::AIR, 0), false);
+            }
         }
+
     }
 }
