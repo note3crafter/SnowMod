@@ -37,7 +37,7 @@ class SnowMod extends PluginBase implements Listener
     {
         $this->getScheduler()->scheduleRepeatingTask(new SnowModTask ($this), 1);
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->saveResource("settings.json", false);
+        $this->saveResource("settings.yml", false);
     }
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool
