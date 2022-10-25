@@ -6,7 +6,7 @@
 //     ║ ║  ║ ╔═╗ ║║ ╔══╝ ║ ╠══╗   ║║ ║ ║ ║  ║ ║  ║ ╔══╝
 //     ║ ║  ║ ║ ║ ║║ ╚═══╗║ ║  ╚═╗ ║║ ╚═╝ ║  ║ ║  ║ ╚═══╗
 //     ╚═╝  ╚═╝ ╚═╝╚═════╝╚═╝    ╚═╝╚═════╝  ╚═╝  ╚═════╝
-//   Copyright by TheNote! Not for Resale! Not for others
+//   Plugin by TheNote! Not for Sale! Now for Pocketmine
 //                        2017-2022
 
 namespace TheNote\SnowMod;

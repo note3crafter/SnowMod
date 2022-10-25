@@ -6,21 +6,17 @@
 //     ║ ║  ║ ╔═╗ ║║ ╔══╝ ║ ╠══╗   ║║ ║ ║ ║  ║ ║  ║ ╔══╝
 //     ║ ║  ║ ║ ║ ║║ ╚═══╗║ ║  ╚═╗ ║║ ╚═╝ ║  ║ ║  ║ ╚═══╗
 //     ╚═╝  ╚═╝ ╚═╝╚═════╝╚═╝    ╚═╝╚═════╝  ╚═╝  ╚═════╝
-//   Copyright by TheNote! Not for Resale! Not for others
+//   Plugin by TheNote! Not for Sale! Now for Pocketmine
 //                        2017-2022
 
 namespace TheNote\SnowMod;
 
 use pocketmine\block\BlockFactory;
 use pocketmine\block\BlockLegacyIds;
-use pocketmine\block\VanillaBlocks;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\data\bedrock\BiomeIds;
 use pocketmine\event\world\ChunkLoadEvent;
-use pocketmine\item\ItemIds;
-use pocketmine\item\StringToItemParser;
-use pocketmine\item\VanillaItems;
 use pocketmine\math\Vector3;
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
