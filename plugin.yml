@@ -1,9 +1,9 @@
 name: SnowMod
 main: TheNote\SnowMod\SnowMod
-version: 3.0.1
+version: 3.0.2
 author: TheNote
-api: 4.10.0
-mcpe-protocol: 557
+api: 4.12.1
+mcpe-protocol: 560
 description: SnowMod by TheNote
 commands:
   snowmod:
