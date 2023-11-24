@@ -11,27 +11,27 @@
 
 namespace TheNote\SnowMod;
 
-use pocketmine\block\BlockFactory;
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
+use pocketmine\block\VanillaBlocks;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\data\bedrock\BiomeIds;
-use pocketmine\event\world\ChunkLoadEvent;
-use pocketmine\math\Vector3;
-use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
-use pocketmine\utils\Config;
 use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\event\world\ChunkLoadEvent;
 use pocketmine\network\mcpe\protocol\LevelEventPacket;
+use pocketmine\player\Player;
+use pocketmine\plugin\PluginBase;
+use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\Position;
-use TheNote\core\player\Player;
+use pocketmine\world\World;
 
 class SnowMod extends PluginBase implements Listener
 {
-    public $cooltime = 0;
-    public $m_version = 2, $pk;
-    public $denied = [];
+    public int $cooltime = 0;
+    public mixed $m_version = 2, $pk;
+    public array $denied = [];
 
     public function onEnable(): void
     {
@@ -80,11 +80,13 @@ class SnowMod extends PluginBase implements Listener
         if ($check === true) {
             for ($x = 0; $x < 16; ++$x)
                 for ($z = 0; $z < 16; ++$z)
-                    $event->getChunk()->setBiomeId($x, $z, BiomeIds::ICE_PLAINS);
+                    for($y = World::Y_MIN; $y < World::Y_MAX; $y++)
+                    $event->getChunk()->setBiomeId($x, $y, $z, BiomeIds::ICE_PLAINS);
         } elseif ($check === false) {
             for ($x = 0; $x < 16; ++$x)
                 for ($z = 0; $z < 16; ++$z)
-                    $event->getChunk()->setBiomeId($x, $z, BiomeIds::PLAINS);
+                    for($y = World::Y_MIN; $y < World::Y_MAX; $y++)
+                    $event->getChunk()->setBiomeId($x, $y, $z, BiomeIds::PLAINS);
         }
         return true;
     }
@@ -127,7 +129,7 @@ class SnowMod extends PluginBase implements Listener
         }
     }
 
-    public function SnowCreate(Vector3 $pos)
+    public function SnowCreate(Position $pos)
     {
         $this->cooltime--;
         if ($pos == null)
@@ -135,31 +137,31 @@ class SnowMod extends PluginBase implements Listener
         $down = $pos->getWorld()->getBlock($pos);
         if (!$down->isSolid())
             return;
-        if ($down->getId() == BlockLegacyIds::MYCELIUM
-            or $down->getId() == BlockLegacyIds::PODZOL
-            or $down->getId() == BlockLegacyIds::COBBLESTONE
-            or $down->getId() == BlockLegacyIds::DEAD_BUSH
-            or $down->getId() == BlockLegacyIds::WATER
-            or $down->getId() == BlockLegacyIds::LAVA
-            or $down->getId() == BlockLegacyIds::WOOL
-            or $down->getId() == BlockLegacyIds::ACACIA_FENCE_GATE
-            or $down->getId() == BlockLegacyIds::BIRCH_FENCE_GATE
-            or $down->getId() == BlockLegacyIds::DARK_OAK_FENCE_GATE
-            or $down->getId() == BlockLegacyIds::JUNGLE_FENCE_GATE
-            or $down->getId() == BlockLegacyIds::OAK_FENCE_GATE
-            or $down->getId() == BlockLegacyIds::SPRUCE_FENCE_GATE
-            or $down->getID() == BlockLegacyIds::SMOOTH_STONE
-            or $down->getId() == BlockLegacyIds::FARMLAND)
+        if ($down->getTypeId() == BlockTypeIds::MYCELIUM
+            or $down->getTypeId() == BlockTypeIds::PODZOL
+            or $down->getTypeId() == BlockTypeIds::COBBLESTONE
+            or $down->getTypeId() == BlockTypeIds::DEAD_BUSH
+            or $down->getTypeId() == BlockTypeIds::WATER
+            or $down->getTypeId() == BlockTypeIds::LAVA
+            or $down->getTypeId() == BlockTypeIds::WOOL
+            or $down->getTypeId() == BlockTypeIds::ACACIA_FENCE_GATE
+            or $down->getTypeId() == BlockTypeIds::BIRCH_FENCE_GATE
+            or $down->getTypeId() == BlockTypeIds::DARK_OAK_FENCE_GATE
+            or $down->getTypeId() == BlockTypeIds::JUNGLE_FENCE_GATE
+            or $down->getTypeId() == BlockTypeIds::OAK_FENCE_GATE
+            or $down->getTypeId() == BlockTypeIds::SPRUCE_FENCE_GATE
+            or $down->getTypeId() == BlockTypeIds::SMOOTH_STONE
+            or $down->getTypeId() == BlockTypeIds::FARMLAND)
             return;
 
         $up = $pos->getWorld()->getBlock($pos->add(0, 1, 0));
-        if ($up->getId() != BlockLegacyIds::AIR)
+        if ($up->getTypeId() != BlockTypeIds::AIR)
             return;
         $settings = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
         $level = $settings->get("worlds", []);
         $wname = $pos->getWorld()->getFolderName();
         if (in_array($wname, $level)) {
-            $pos->getWorld()->setBlock($pos->add(0, 1, 0), BlockFactory::getInstance()->get(BlockLegacyIds::SNOW_LAYER, 0), true);
+            $pos->getWorld()->setBlock($pos->add(0, 1, 0), VanillaBlocks::SNOW_LAYER(), true);
         }
     }
 
@@ -171,8 +173,8 @@ class SnowMod extends PluginBase implements Listener
         $level = $settings->get("worlds", []);
         $wname = $pos->getWorld()->getFolderName();
         if (in_array($wname, $level)) {
-            if ($pos->getWorld()->getBlockAt($pos->x, $pos->y, $pos->z)->getId() == BlockLegacyIds::SNOW_LAYER) {
-                $pos->getWorld()->setBlock($pos, BlockFactory::getInstance()->get(BlockLegacyIds::AIR, 0), false);
+            if ($pos->getWorld()->getBlockAt($pos->x, $pos->y, $pos->z)->getTypeId() == BlockTypeIds::SNOW_LAYER) {
+                $pos->getWorld()->setBlock($pos, VanillaBlocks::AIR(), false);
             }
         }
 

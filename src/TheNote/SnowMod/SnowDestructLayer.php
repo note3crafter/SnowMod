@@ -15,17 +15,11 @@ use pocketmine\world\Position;
 
 class SnowDestructLayer extends Task
 {
-    public $position;
 
-    function __construct(SnowMod $player, Position $position)
-    {
-        $this->player = $player;
-        $this->position = $position;
-    }
+    function __construct(private readonly SnowMod $player, private readonly Position $position) {}
 
     public function onRun(): void
     {
-        $player = $this->player;
-        $player->SnowDestruct($this->position);
+        $this->player->SnowDestruct($this->position);
     }
 }
