@@ -12,7 +12,13 @@
 namespace TheNote\SnowMod;
 
 use pocketmine\block\BlockTypeIds;
+use pocketmine\block\Fence;
+use pocketmine\block\FenceGate;
+use pocketmine\block\Slab;
+use pocketmine\block\Stair;
+use pocketmine\block\utils\SlabType;
 use pocketmine\block\VanillaBlocks;
+use pocketmine\block\Wall;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\data\bedrock\BiomeIds;
@@ -113,18 +119,18 @@ class SnowMod extends PluginBase implements Listener
 
         $settings = new Config($this->getDataFolder() . "settings.yml", Config::YAML);
         $check = $settings->get("snowallowed");
-        $x = mt_rand($player->getPosition()->getX() - 15, $player->getPosition()->getX() + 15);
-        $z = mt_rand($player->getPosition()->getZ() - 15, $player->getPosition()->getZ() + 15);
-        $y = $player->getWorld()->getHighestBlockAt($x, $z);
+        $x = mt_rand(round($player->getPosition()->getX() - 15), round($player->getPosition()->getX() + 15));
+        $z = mt_rand(round($player->getPosition()->getZ() - 15), round($player->getPosition()->getZ() + 15));
+        $y = ($hb = $player->getPosition()->getWorld()->getHighestBlockAt($x, $z)) === null ? ($player->getPosition()->getWorld()->getHighestBlockAt((int)$player->getPosition()->getX(), (int)$player->getPosition()->getZ()) ?? (int)$player->getPosition()->getY()) : $hb;
         if ($check === false) {
             if ($this->cooltime < 11) {
                 $this->cooltime++;
-                $this->getScheduler()->scheduleDelayedTask(new SnowDestructLayer ($this, new Position ($x, $y, $z, $player->getWorld())), 20);
+                $this->getScheduler()->scheduleDelayedTask(new SnowDestructLayer($this, new Position ($x, $y, $z, $player->getWorld())), 20);
             }
         } elseif ($check === true) {
             if ($this->cooltime < 11) {
                 $this->cooltime++;
-                $this->getScheduler()->scheduleDelayedTask(new SnowCreateLayer ($this, new Position ($x, $y, $z, $player->getWorld())), 20);
+                $this->getScheduler()->scheduleDelayedTask(new SnowCreateLayer($this, new Position ($x, $y, $z, $player->getWorld())), 20);
             }
         }
     }
@@ -153,6 +159,9 @@ class SnowMod extends PluginBase implements Listener
             or $down->getTypeId() == BlockTypeIds::SMOOTH_STONE
             or $down->getTypeId() == BlockTypeIds::FARMLAND)
             return;
+
+        if ($down instanceof Stair || ($down instanceof Slab && $down->getSlabType() === SlabType::BOTTOM)
+        || $down instanceof Fence || $down instanceof FenceGate || $down instanceof Wall) return;
 
         $up = $pos->getWorld()->getBlock($pos->add(0, 1, 0));
         if ($up->getTypeId() != BlockTypeIds::AIR)
