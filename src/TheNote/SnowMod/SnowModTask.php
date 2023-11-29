@@ -15,14 +15,10 @@ use pocketmine\scheduler\Task;
 
 class SnowModTask extends Task
 {
-    function __construct(SnowMod $player)
-    {
-        $this->player = $player;
-    }
+    function __construct(private readonly SnowMod $player) {}
 
     public function onRun(): void
     {
-        $player = $this->player;
-        $player->SnowMod();
+        $this->player->SnowMod();
     }
 }

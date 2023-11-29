@@ -16,18 +16,10 @@ use pocketmine\world\Position;
 
 class SnowCreateLayer extends Task
 {
-    public $position;
-
-    function __construct(SnowMod $player, Position $position)
-    {
-        $this->player = $player;
-        $this->position = $position;
-    }
+    function __construct(private readonly SnowMod $player, private readonly Position $position) {}
 
     public function onRun(): void
     {
-
-        $player = $this->player;
-        $player->SnowCreate($this->position);
+        $this->player->SnowCreate($this->position);
     }
 }
